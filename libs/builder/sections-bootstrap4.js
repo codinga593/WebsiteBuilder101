@@ -237,9 +237,9 @@ Vvveb.Sections.add("bootstrap4/slider-header", {
 <header class="slider" data-name="slider">
   <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
-      <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+      <li data-bs-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+      <li data-bs-target="#carouselExampleIndicators" data-slide-to="1"></li>
+      <li data-bs-target="#carouselExampleIndicators" data-slide-to="2"></li>
     </ol>
     <div class="carousel-inner" role="listbox">
       <!-- Slide One - Set the background image for this slide in the line below -->
@@ -298,7 +298,7 @@ Vvveb.Sections.add("bootstrap4/video-header", {
 <header class="video" data-name="header-video">
   <div class="overlay"></div>
   <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-    <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4">
+    <source src="../../media/sample.webm" type="video/mp4">
   </video>
   <div class="container h-100">
     <div class="d-flex h-100 text-center align-items-center">

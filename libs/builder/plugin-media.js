@@ -1,56 +1,81 @@
-var ImageInput = $.extend({}, Input, {
+ImageInput = { ...ImageInput, ...{
 
+	tag: "img",
+	
     events: [
-        ["change", "onChange", "input[type=text]"],
+        ["change", "onImageChange", "input[type=text]"],
         ["click", "onClick", "button"],
         ["click", "onClick", "img"],
 	 ],
 
 	setValue: function(value) {
-		if (value.indexOf("data:image") == -1)
-		{
-				$('input[type="text"]', this.element).val(value);
-				$('img', this.element).attr("src",value);
+		if (value && value.indexOf("data:image") == -1 && value != "none") {
+				this.element[0].querySelector('input[type="text"]').value = value;
+				//$('input[type="text"]', this.element).val(value);
+				let src = (value.indexOf("//") > -1 || value.indexOf("media/") > -1 || value.indexOf("image-cache/") > -1 ? '' : Vvveb.themeBaseUrl) + value
+				this.element[0].querySelector(this.tag).src = src;
+				//$(this.tag, this.element).attr("src", src);
+		} else {
+			this.element[0].querySelector(this.tag).src = Vvveb.baseUrl + 'icons/image.svg';
+			///$(this.tag, this.element).attr("src", Vvveb.baseUrl + 'icons/image.svg');
 		}
 	},
 
-    onChange: function(e, node) {
+    onImageChange: function(event, node, input) {
 		//set initial relative path
-		let src = this.value;
+		let self = this;
+		let src = self.value;
+		let tag = input.tag;
+
+		let img = node.querySelector(tag);
+		if (img.src) {
+			src = img.getAttribute("src");
+		}
 		
-		delay(() => { 
-			//get full image path
-			let img = $("img", e.data.element).get(0);
-			
-			if (img.src) {
-				src = img.src;
-			}
-			
-			if (src) {
-			    e.data.element.trigger('propertyChange', [src, this]);
-			}
-		}, 500);
-		
-		//e.data.element.trigger('propertyChange', [src, this]);
+		if (src) {
+			input.value = src;
+			input.onChange.call(self, event, node, input);
+			//e.data.element.trigger('propertyChange', [src, this]);
+		}
 		
 		//reselect image after loading to adjust highlight box size
-		Vvveb.Builder.selectedEl.get(0).onload = function () {
+		let onLoad = function () {
 				if (Vvveb.Builder.selectedEl) {
 					Vvveb.Builder.selectedEl.click();
 				}
 		};
+		
+		Vvveb.Builder.selectedEl.addEventListener("load", onLoad);
 	},
+		
     
-    onClick: function(e) {
-        if (!Vvveb.MediaModal) {
+    onClick: function(e, element) {
+		if (!Vvveb.MediaModal) {
 			Vvveb.MediaModal = new MediaModal(true);
+			Vvveb.MediaModal.mediaPath = window.mediaPath;
 		}
-		Vvveb.MediaModal.mediaPath = window.mediaPath;
-		Vvveb.MediaModal.open(this);        
+
+		Vvveb.MediaModal.open(this.closest("[data-target-input]"));
     },
     
 	init: function(data) {
 		return this.render("imageinput-gallery", data);
 	},
   }
-);
+}
+
+VideoInput = { ...ImageInput, ...{
+	tag:"video",
+
+    events: [
+        ["change", "onChange", "input[type=text]"],
+        ["click", "onClick", "button"],
+        ["click", "onClick", "video"],
+	 ],
+
+	
+	init: function(data) {
+		return this.render("videoinput-gallery", data);
+	},
+  }
+}

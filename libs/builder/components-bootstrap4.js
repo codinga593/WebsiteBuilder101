@@ -16,7 +16,7 @@ limitations under the License.
 https://github.com/givanz/Vvvebjs
 */
 
-bgcolorClasses = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-light", "bg-dark", "bg-white"]
+bgcolorClasses = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-light-subtle", "bg-dark", "bg-white"]
 
 bgcolorSelectOptions = 
 [{
@@ -42,7 +42,7 @@ bgcolorSelectOptions =
 	value: "bg-info",
 	text: "Info"
 }, {
-	value: "bg-light",
+	value: "bg-light-subtle",
 	text: "Light"
 }, {
 	value: "bg-dark",
@@ -1253,7 +1253,7 @@ Vvveb.Components.extend("_base","html/alert", {
     name: "Alert",
     image: "icons/alert.svg",
     html: '<div class="alert alert-warning alert-dismissible fade show" role="alert">\
-		  <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+		  <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">\
 			<span aria-hidden="true">&times;</span>\
 		  </button>\
 		  <strong>Holy guacamole!</strong> You should check in on some of those fields below.\
@@ -1553,9 +1553,9 @@ Vvveb.Components.extend("_base", "html/navbar", {
     classes: ["navbar"],
     image: "icons/navbar.svg",
     name: "Nav Bar",
-    html: '<nav class="navbar navbar-expand-lg navbar-light bg-light">\
+    html: '<nav class="navbar navbar-expand-lg navbar-light bg-light-subtle">\
 		  <a class="navbar-brand" href="#">Navbar</a>\
-		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">\
+		  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">\
 			<span class="navbar-toggler-icon"></span>\
 		  </button>\
 		\
@@ -2338,7 +2338,7 @@ Vvveb.Components.extend("_base", "html/paragraph", {
 Vvveb.Components.extend("_base", "html/video", {
     nodes: ["video"],
     name: "Video",
-    html: '<video width="320" height="240" playsinline loop autoplay><source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4"><video>',
+    html: '<video width="320" height="240" playsinline loop autoplay><source src="../../media/sample.webm"><video>',
     dragHtml: '<img  width="320" height="240" src="' + Vvveb.baseUrl + 'icons/video.svg">',
 	image: "icons/video.svg",
     properties: [{

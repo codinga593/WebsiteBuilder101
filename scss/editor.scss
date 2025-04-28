@@ -16,10 +16,6 @@ limitations under the License.
 https://github.com/givanz/VvvebJs
 */
 
-html {
-	font-size:14px;
-}
-
 body
 {
 	font-family:"Helvetica Neue", Helvetica, -apple-system, Arial, "Lucida Grande", system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -34,12 +30,14 @@ $form-select-bg-position: right 0.7rem center;
 $input-btn-padding-y: .4rem;
 $input-btn-padding-x: .5rem;
 $custom-select-padding-y: .4rem;
-$light: #fafafa;
+//$light: var(--bs-secondary-bg-subtle);
+//$blue:#495ffb;
 
-#logo
-{
-	margin-left: 0.5rem;
-	margin-top: 0.15rem;
+#logo {
+	
+	html[data-bs-theme="dark"] & {
+	    filter: brightness(3);
+	}
 }
 
 $input-height: default;
@@ -57,8 +55,10 @@ $link-decoration: none;
 $font-size-base: 1rem;
 
 @import "line-awesome/line-awesome";
+@import "ionicons";
 @import "bootstrap/bootstrap";
 @import "builder";
+@import "components/gallery";
 
 
 .btn-icon
@@ -66,7 +66,10 @@ $font-size-base: 1rem;
 	font-weight:500;
 	text-transform:capitalize;
 	margin-bottom:0px;
-	padding:0.5rem 2rem;
+	//padding:0.4rem 2rem;
+	box-shadow:1px 1px 2px 1px rgba(var(--bs-body-color-rgb),0.07),1px 1px 2px 1px rgba(var(--bs-body-bg-rgb),0.15) inset;
+	border:none;	
+	position:relative;
 	
 	i:first-child
 	{
@@ -80,23 +83,24 @@ $font-size-base: 1rem;
 	{
 		border-width:0px;
 		box-shadow:0px 0px 1px 0px #3478f2;
-		background-color:#fff;
+		background-color:var(--bs-body-bg);
 
 		&:hover
 		{
-			color:$primary;
+			color:var(--bs-link-color);
 			background:$gray-100;
 		}
 		
 		i {
-			//border-right:1px solid rgba(0,0,0, 0.1);
+			//border-right:1px solid rgba(var(--bs-body-color-rgb), 0.1);
 			background:transparent;
 		}
 	}
 	
 	&.btn-outline-secondary {
-		box-shadow:0px 0px 2px 1px rgba(0, 0, 0, 0.07), -1px 1px 2px 0px rgba(255, 255, 255, 0.15) inset;
-		box-shadow:1px 1px 1px 0px rgba(0, 0, 0, 0.07);
+		//box-shadow:0px 0px 3px 1px rgba(var(--bs-body-color-rgb), 0.1), -1px 1px 2px 0px rgba(var(--bs-body-bg-rgb), 0.15) inset;
+		box-shadow:rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(var(--bs-body-color-rgb), 0.12) 0px 1px 2px 0px, rgba(var(--bs-body-color-rgb), 0.08) 0px 0px 0px 1px;
+		//--bs-btn-bg:var(--bs-body-bg);
 	}
 	
 	&.btn-gray
@@ -108,7 +112,7 @@ $font-size-base: 1rem;
 	
 	&.btn-secondary
 	{
-		box-shadow:-1px 1px 2px 1px rgba(0,0,0,0.07),-1px 1px 2px 0px rgba(255,255,255,0.15) inset;
+		box-shadow:-1px 1px 2px 1px rgba(var(--bs-body-color-rgb),0.07),-1px 1px 2px 0px rgba(var(--bs-body-bg-rgb),0.15) inset;
 
 		i
 		{
@@ -117,10 +121,9 @@ $font-size-base: 1rem;
 	}
 
 	&.btn-primary {
-		box-shadow:-1px 1px 2px 1px rgba(0,0,0,0.07),-1px 1px 2px 0px rgba(255,255,255,0.15) inset;
-
+		box-shadow:rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.2) 0px 0.75px 0px 0px inset, rgba(var(--bs-primary-rgb), 0.4) 0px 1px 2px 0px, rgba(var(--bs-primary-rgb), 0.8) 0px 0px 0px 1px;
 		i {
-			/*background: rgba(255,255,255, 0.1);*/
+			/*background: rgba(var(--bs-body-bg-rgb), 0.1);*/
 		}
 	}
 	
@@ -128,6 +131,21 @@ $font-size-base: 1rem;
 		i {
 			//padding: 0.5rem 0.5rem;
 		}
+	}
+	&:after {
+		content: ".";
+		background-image:linear-gradient(rgba(var(--bs-body-bg-rgb), 1), rgba(var(--bs-body-bg-rgb), 0));
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0.16;
+	}
+
+	&.btn-outline-secondary:after,&.btn-outline-primary:after {
+		background-image: linear-gradient(rgba(var(--bs-body-color-rgb), 0), rgba(var(--bs-body-color-rgb), 1));
+		opacity: 0.03;
 	}
 }
 
@@ -138,13 +156,13 @@ label.form-check .form-check-input {
 }
 .form-check .form-check-input {
     position: relative;
-    box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.07) inset;
+    box-shadow: 0px 0px 2px 1px rgba(var(--bs-body-color-rgb), 0.07) inset;
 }
 
 .alert-light {
-    color: #525252;
-    background-color: whitesmoke;
-    border-color: #f0f0f0;
+    //color: #525252;
+    //background-color: whitesmoke;
+    //border-color: #f0f0f0;
 }
 
 .modal-full .modal-dialog.modal-xl {
@@ -157,6 +175,29 @@ label.form-check .form-check-input {
 
 .btn-outline-secondary
 {
-	color:#555;
-	border-color:#ddd;
+	//color:#555;
+	//border-color:var(--bs-border-color);
+}
+
+
+.align-left {
+	float:left;
+	margin-bottom: 25px;
+    max-width: 50%;
+}
+
+.align-right {
+	float:right;
+	margin-bottom: 25px;
+    max-width: 50%;
+}
+
+.align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+video, audio {
+	max-width:100%;
 }

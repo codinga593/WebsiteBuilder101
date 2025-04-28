@@ -1,45 +1,176 @@
 # VvvebJs
 
+<p align="center">
+  <img src="https://www.vvveb.com/admin/themes/default/img/biglogo.png" alt="Vvveb">
+  <br><br>
+  <strong>Drag and drop page builder javascript library.</strong>
+  <br>
+  <span>Built with Vanilla Js with no dependencies or build tools and Bootstrap 5</span>
+</p>
+<p align="center">
+  <a href="https://www.vvveb.com">Website</a> |
+  <a href="https://github.com/givanz/VvvebJs/wiki">Documentation</a> |
+  <a href="https://github.com/givanz/VvvebJs/discussions">Forum</a> |
+  <a href="https://twitter.com/vvvebcms">Twitter</a> 
+</p>
 
-## Drag and drop website builder javascript library.
 
-For a full featured CMS using VvvebJs check [Vvveb CMS](https://github.com/givanz/Vvveb)
+## [Live Demo](https://www.vvveb.com/vvvebjs/editor.html)
 
-Built with jQuery and Bootstrap 4.
+For a full featured Open Source CMS using VvvebJs page builder check [Vvveb CMS](https://github.com/givanz/Vvveb)
 
-[Two panel Live Demo](https://www.vvveb.com/vvvebjs/editor.html)
+Using [Vvveb landing page template](https://github.com/givanz/landing) for demo page and Bootstrap 5 sections and blocks.
 
-[One panel Live Demo](https://www.vvveb.com/vvvebjs/editor.html#no-right-panel)
-
-[![npm](https://img.shields.io/npm/v/vvvebjs.svg)](https://www.npmjs.com/package/vvvebjs)
-
-Using [Startbootstrap landing page](https://startbootstrap.com/template-overviews/landing-page/) for demo page and Bootstrap 4 components.
-
-<img src="https://www.vvveb.com/img/browser.png?v=1">
+<img src="https://www.vvveb.com/img/dark-theme.png">
+<img src="https://www.vvveb.com/img/light-theme.png">
 
 ### Features
 
-* Components and blocks/snippets drag and drop.
+* Components and blocks/snippets drag and drop and in page insert.
 * Undo/Redo operations.
 * One or two panels interface.
 * File manager and component hierarchy navigation.
-* Add new page.
-* Live code editor.
+* Add new page modal with template and folder options.
+* Live code editor with codemirror plugin syntax highlighting.
 * Image upload with example php script included.
 * Page download or export html or save page on server with example php script included.
-* Components/Blocks list search.
-* Bootstrap 4 components.
+* Components/Sections/Blocks list search.
+* Bootstrap 5 components.
+* Media gallery with integrated CC0 image search and server upload support.
+* Image, video and iframe elements resize handles.
+* Elements breadcrumb for easier parent elements selection.
+* Full Google fonts list support for font selection.
 * Youtube, Google maps, Charts.js etc widgets.
+* Optional CKEditor plugin to replace builtin text editor.
+* Zip download plugin to download the page and all assets as zip file.
+* SVG Icon component bundled with hundreds of free icons.
+* Animate on scroll support for page elements.
+* Theme global typography and color pallette editor.
 
-By default the editor comes with Bootstrap 4 and Widgets components and can be extended with any kind of components and inputs.
+
+By default the editor comes with Bootstrap 5 and Widgets components and can be extended with any kind of components and inputs.
+
+## Install
+
+* Clone the repository 
+```bash
+#git 2.13+ 
+git clone --recurse-submodules https://github.com/givanz/VvvebJs
+
+# older git versions 
+git clone --recursive https://github.com/givanz/VvvebJs
+```
+
+* Pull changes 
+```bash
+git pull --recurse-submodules
+```
 
 ## Usage
 
-```html
-<!-- jquery-->
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery.hotkeys.js"></script>
+Clone the repository or download a release then open `editor.html`
 
+Because of browser iframe security you need to use a webserver such as apache/xampp and open `http://localhost/editor.html`
+
+To use the image upload or page save feature you need to have php installed.
+
+
+## Docker
+
+### Local development
+
+From VvvebJs folder run
+
+```bash
+docker-compose up
+```
+
+### Image 
+
+Or run image 
+
+```bash
+docker run -p 8080:80 vvveb/vvvebjs
+```
+
+Open http://localhost:8080/editor.php or http://localhost:8080/editor.html
+
+## Save page
+
+Save page function needs either php or node
+
+### PHP
+
+If you use docker, xampp or a shared hosting account php should work without any change.
+
+Saving is done using [save.php](save.php)
+
+### Node
+
+For node go to VvvebJs folder and run
+
+```bash
+npm install express
+node save.js
+```
+
+Open http://localhost:8080/editor.html
+
+Saving is done using [save.js](save.js)
+
+
+## [Landing template](https://github.com/givanz/landing)
+
+To make changes to template files or sections run the following commands from `demo/landing` folder
+
+### Install gulp
+
+```bash
+npm i
+```
+
+### Generate html files
+
+Template html partials are located in `demo/landing/src` folder.
+
+```bash
+npm run gulp
+```
+
+### Watch for changes for development
+
+```bash
+npm run gulp watch
+```
+
+### Generate sections list for page builder
+
+Sections html files are located in `demo/landing/src/sections` folder grouped in folders with the section group name.
+
+```bash
+npm run gulp sections
+```
+
+### Generate blocks list
+
+Blocks html files are located in `demo/landing/src/blocks` folder grouped in folders with the blocks group name.
+
+```bash
+npm run gulp blocks
+```
+
+### Generate screenshots for sections
+
+```bash
+npm run gulp screenshots
+```
+
+## Usage
+
+### Initialize example
+
+
+```js
 <!-- bootstrap-->
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -51,23 +182,64 @@ By default the editor comes with Bootstrap 4 and Widgets components and can be e
 <!-- inputs-->
 <script src="libs/builder/inputs.js"></script>	
 <!-- components-->
-<script src="libs/builder/components-bootstrap4.js"></script>	
+<script src="libs/builder/components-bootstrap5.js"></script>	
 <script src="libs/builder/components-widgets.js"></script>	
 
+<script>
+let pages = [
+ {
+	name:"narrow-jumbotron", 
+	title:"Jumbotron", 
+	url: "demo/narrow-jumbotron/index.html", 
+	file: "demo/narrow-jumbotron/index.html"
+  },
+  {name:"landing-page", title:"Landing page", url: "demo/landing/index.html", file: "demo/landing/index.html"},
+];
+	
+
+let firstPage = Object.keys(pages)[0];
+Vvveb.Builder.init(pages[firstPage]["url"], function() {
+	//load code after page is loaded here
+});
+
+Vvveb.Gui.init();
+Vvveb.FileManager.init();
+Vvveb.SectionList.init();
+Vvveb.Breadcrumb.init();
+
+Vvveb.FileManager.addPages(pages);
+Vvveb.FileManager.loadPage(pages[firstPage]["name"]);
+Vvveb.Gui.toggleRightColumn(false);
+Vvveb.Breadcrumb.init();
 
 <script>
-$(document).ready(function() 
-{
-	Vvveb.Builder.init('demo/index.html', function() {
-		//load code after page is loaded here
-		Vvveb.Gui.init();
-	});
-});
-</script>
 ```
-For editor html and components/input javascript templates check editor.html
 
-For css changes edit scss/editor.scss and scss/_builder.scss
+For editor html and components/input javascript templates edit [editor.html](editor.html)
+
+For css changes edit [scss/editor.scss](scss/editor.scss) and [scss/_builder.scss](scss/_builder.scss)
+
+
+### Scss
+
+To compile scss to css first install gulp 
+
+```bash
+npm i
+```
+
+Then you can run 
+
+```bash
+npm run gulp
+```
+
+or use watch to compile on file change.
+
+```bash
+npm run gulp watch
+```
+
 
 ## Documentation
 
@@ -79,30 +251,7 @@ If you like the project you can support it with a [PayPal donation](https://payp
 
 
 <a href="https://opencollective.com/vvvebjs/sponsors/0/website"><img src="https://opencollective.com/vvvebjs/sponsors/0/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/1/website"><img src="https://opencollective.com/vvvebjs/sponsors/1/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/2/website"><img src="https://opencollective.com/vvvebjs/sponsors/2/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/3/website"><img src="https://opencollective.com/vvvebjs/sponsors/3/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/4/website"><img src="https://opencollective.com/vvvebjs/sponsors/4/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/5/website"><img src="https://opencollective.com/vvvebjs/sponsors/5/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/6/website"><img src="https://opencollective.com/vvvebjs/sponsors/6/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/7/website"><img src="https://opencollective.com/vvvebjs/sponsors/7/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/8/website"><img src="https://opencollective.com/vvvebjs/sponsors/8/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/sponsors/9/website"><img src="https://opencollective.com/vvvebjs/sponsors/9/avatar"></a>
-
 <a href="https://opencollective.com/vvvebjs/backers/0/website"><img src="https://opencollective.com/vvvebjs/backers/0/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/1/website"><img src="https://opencollective.com/vvvebjs/backers/1/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/2/website"><img src="https://opencollective.com/vvvebjs/backers/2/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/3/website"><img src="https://opencollective.com/vvvebjs/backers/3/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/4/website"><img src="https://opencollective.com/vvvebjs/backers/4/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/5/website"><img src="https://opencollective.com/vvvebjs/backers/5/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/6/website"><img src="https://opencollective.com/vvvebjs/backers/6/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/7/website"><img src="https://opencollective.com/vvvebjs/backers/7/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/8/website"><img src="https://opencollective.com/vvvebjs/backers/8/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/9/website"><img src="https://opencollective.com/vvvebjs/backers/9/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/10/website"><img src="https://opencollective.com/vvvebjs/backers/10/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/11/website"><img src="https://opencollective.com/vvvebjs/backers/11/avatar"></a>
-<a href="https://opencollective.com/vvvebjs/backers/12/website"><img src="https://opencollective.com/vvvebjs/backers/12/avatar"></a>
-
 
 ## License
 

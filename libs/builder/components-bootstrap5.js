@@ -17,7 +17,7 @@ https://github.com/givanz/Vvvebjs
 */
 
 Vvveb.ComponentsGroup['Bootstrap 5'] =
-["html/container", "html/gridrow", "html/btn", "html/buttongroup", "html/buttontoolbar", "html/heading", "html/image", "html/alert", "html/card", "html/listgroup", "html/hr", "html/badge", "html/progress", "html/navbar", "html/breadcrumbs", "html/pagination", "html/form","html/table", "html/paragraph"];
+["html/container", "html/gridrow", "html/btn", "html/btn-link", "html/buttongroup", "html/buttontoolbar", "html/alert", "html/card", "html/listgroup", "html/badge", "html/progress", "html/navbar", "html/breadcrumbs", "html/pagination"];
 
 
 Vvveb.Components.extend("_base", "html/container", {
@@ -36,13 +36,12 @@ Vvveb.Components.extend("_base", "html/container", {
             options: [{
                 value: "container",
                 text: "Default"
-            }, {
+            },{
                 value: "container-fluid",
                 text: "Fluid"
             }]
         }
-    },
-	{
+    },{
         name: "Background",
         key: "background",
 		htmlAttr: "class",
@@ -51,14 +50,12 @@ Vvveb.Components.extend("_base", "html/container", {
         data: {
             options: bgcolorSelectOptions
         }
-    },
-	{
+    },{
         name: "Background Color",
         key: "background-color",
 		htmlAttr: "style",
         inputtype: ColorInput,
-    },
-	{
+    },{
         name: "Text Color",
         key: "color",
 		htmlAttr: "style",
@@ -66,19 +63,15 @@ Vvveb.Components.extend("_base", "html/container", {
     }],
 });
 
-Vvveb.Components.extend("_base", "html/btn", {
-    classes: ["btn", "btn-link"],
+Vvveb.Components.extend("html/link", "html/btn", {
+    classes: ["btn"],
+    nodes: null,
     name: "Button",
     image: "icons/button.svg",
-    html: '<button type="button" class="btn btn-primary">Primary</button>',
+    html: '<a class="btn btn-primary">Primary</a>',
     properties: [{
-        name: "Link To",
-        key: "href",
-        htmlAttr: "href",
-        inputtype: LinkInput
-    }, {
-        name: "Type",
-        key: "type",
+        name: "Background",
+        key: "background",
         htmlAttr: "class",
         inputtype: SelectInput,
         validValues: ["btn-default", "btn-primary", "btn-info", "btn-success", "btn-warning", "btn-info", "btn-light", "btn-dark", "btn-outline-primary", "btn-outline-info", "btn-outline-success", "btn-outline-warning", "btn-outline-info", "btn-outline-light", "btn-outline-dark", "btn-link"],
@@ -86,54 +79,54 @@ Vvveb.Components.extend("_base", "html/btn", {
             options: [{
                 value: "btn-default",
                 text: "Default"
-            }, {
+            },{
                 value: "btn-primary",
                 text: "Primary"
-            }, {
+            },{
                 value: "btn btn-info",
                 text: "Info"
-            }, {
+            },{
                 value: "btn-success",
                 text: "Success"
-            }, {
+            },{
                 value: "btn-warning",
                 text: "Warning"
-            }, {
+            },{
                 value: "btn-info",
                 text: "Info"
-            }, {
+            },{
                 value: "btn-light",
                 text: "Light"
-            }, {
+            },{
                 value: "btn-dark",
                 text: "Dark"
-            }, {
+            },{
                 value: "btn-outline-primary",
                 text: "Primary outline"
-            }, {
+            },{
                 value: "btn btn-outline-info",
                 text: "Info outline"
-            }, {
+            },{
                 value: "btn-outline-success",
                 text: "Success outline"
-            }, {
+            },{
                 value: "btn-outline-warning",
                 text: "Warning outline"
-            }, {
+            },{
                 value: "btn-outline-info",
                 text: "Info outline"
-            }, {
+            },{
                 value: "btn-outline-light",
                 text: "Light outline"
-            }, {
+            },{
                 value: "btn-outline-dark",
                 text: "Dark outline"
-            }, {
+            },{
                 value: "btn-link",
                 text: "Link"
             }]
         }
-    }, {
+    },{
         name: "Size",
         key: "size",
         htmlAttr: "class",
@@ -143,31 +136,41 @@ Vvveb.Components.extend("_base", "html/btn", {
             options: [{
                 value: "",
                 text: "Default"
-            }, {
+            },{
                 value: "btn-lg",
                 text: "Large"
-            }, {
+            },{
                 value: "btn-sm",
                 text: "Small"
             }]
         }
-    }, {
-        name: "Target",
-        key: "target",
-        htmlAttr: "target",
-        inputtype: TextInput
-    }, {
+   	},{
+        name: "Autofocus",
+        key: "autofocus",
+        htmlAttr: "autofocus",
+        inputtype: CheckboxInput,
+		inline:true,
+        col:6,
+   	},{
         name: "Disabled",
         key: "disabled",
         htmlAttr: "class",
+		inline:true,
+        col:6,
         inputtype: ToggleInput,
         validValues: ["disabled"],
         data: {
             on: "disabled",
             off: null
         }
+    },{
+	key: "link_options",
+        inputtype: SectionInput,
+        name:false,
+        data: {header:"Link"},
     }]
 });
+	
 Vvveb.Components.extend("_base", "html/buttongroup", {
     classes: ["btn-group"],
     name: "Button Group",
@@ -183,15 +186,15 @@ Vvveb.Components.extend("_base", "html/buttongroup", {
             options: [{
                 value: "",
                 text: "Default"
-            }, {
+            },{
                 value: "btn-group-lg",
                 text: "Large"
-            }, {
+            },{
                 value: "btn-group-sm",
                 text: "Small"
             }]
         }
-    }, {
+    },{
 	    name: "Alignment",
         key: "alignment",
         htmlAttr: "class",
@@ -201,10 +204,10 @@ Vvveb.Components.extend("_base", "html/buttongroup", {
             options: [{
                 value: "",
                 text: "Default"
-            }, {
+            },{
                 value: "btn-group",
                 text: "Horizontal"
-            }, {
+            },{
                 value: "btn-group-vertical",
                 text: "Vertical"
             }]
@@ -252,25 +255,25 @@ Vvveb.Components.extend("_base","html/alert", {
             options: [{
                 value: "alert-primary",
                 text: "Default"
-            }, {
+            },{
                 value: "alert-secondary",
                 text: "Secondary"
-            }, {
+            },{
                 value: "alert-success",
                 text: "Success"
-            }, {
+            },{
                 value: "alert-danger",
                 text: "Danger"
-            }, {
+            },{
                 value: "alert-warning",
                 text: "Warning"
-            }, {
+            },{
                 value: "alert-info",
                 text: "Info"
-            }, {
+            },{
                 value: "alert-light",
                 text: "Light"
-            }, {
+            },{
                 value: "alert-dark",
                 text: "Dark"
             }]
@@ -286,34 +289,34 @@ Vvveb.Components.extend("_base", "html/badge", {
         name: "Color",
         key: "color",
         htmlAttr: "class",
-        validValues:["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-light", "bg-dark"],
+        validValues:["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-body-secondary", "bg-dark"],
         inputtype: SelectInput,
         data: {
             options: [{
                 value: "",
                 text: "Default"
-            }, {
+            },{
                 value: "bg-primary",
                 text: "Primary"
-            }, {
+            },{
                 value: "bg-secondary",
                 text: "Secondary"
-            }, {
+            },{
                 value: "bg-success",
                 text: "Success"
-            }, {
+            },{
                 value: "bg-warning",
                 text: "Warning"
-            }, {
+            },{
                 value: "bg-danger",
                 text: "Danger"
-            }, {
+            },{
                 value: "bg-info",
                 text: "Info"
-            }, {
-                value: "bg-light",
+            },{
+                value: "bg-body-secondary",
                 text: "Light"
-            }, {
+            },{
                 value: "bg-dark",
                 text: "Dark"
             }]
@@ -325,7 +328,7 @@ Vvveb.Components.extend("_base", "html/card", {
     image: "icons/panel.svg",
     name: "Card",
     html: '<div class="card">\
-		  <img class="card-img-top" src="../libs/builder/icons/image.svg" alt="Card image cap" width="128" height="128">\
+		  <img class="card-img-top bg-body-secondary" src="' +  Vvveb.baseUrl + 'icons/image.svg" alt="Card image cap">\
 		  <div class="card-body">\
 			<h4 class="card-title">Card title</h4>\
 			<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card\'s content.</p>\
@@ -333,27 +336,129 @@ Vvveb.Components.extend("_base", "html/card", {
 		  </div>\
 		</div>'
 });
+
 Vvveb.Components.extend("_base", "html/listgroup", {
     name: "List Group",
     image: "icons/list_group.svg",
     classes: ["list-group"],
-    html: '<ul class="list-group">\n  <li class="list-group-item">\n    <span class="badge">14</span>\n    Cras justo odio\n  </li>\n  <li class="list-group-item">\n    <span class="badge">2</span>\n    Dapibus ac facilisis in\n  </li>\n  <li class="list-group-item">\n    <span class="badge">1</span>\n    Morbi leo risus\n  </li>\n</ul>'
+    html: '<ul class="list-group">\n  <li class="list-group-item">\n    <span class="badge bg-success">14</span>\n    Cras justo odio\n  </li>\n  <li class="list-group-item">\n    <span class="badge bg-primary">2</span>\n    Dapibus ac facilisis in\n  </li>\n  <li class="list-group-item">\n    <span class="badge bg-danger">1</span>\n    Morbi leo risus\n  </li>\n</ul>',
+	properties: [{
+        name: "Flush",
+        key: "flush",
+        htmlAttr: "class",
+        validValues: ["", "list-group-flush"],
+        inputtype: ToggleInput,
+        data: {
+            on: "list-group-flush",
+            off: ""
+        }
+    },{
+        name: "Numbered",
+        key: "numbered",
+        htmlAttr: "class",
+        validValues: ["", "list-group-numbered"],
+        inputtype: ToggleInput,
+        data: {
+            on: "list-group-numbered",
+            off: ""
+        }
+    },{
+        name: "Horizontal",
+        key: "horizontal",
+        htmlAttr: "class",
+        validValues: ["", "list-group-horizontal"],
+        inputtype: ToggleInput,
+        data: {
+            on: "list-group-horizontal",
+            off: ""
+        }
+    }]    
 });
+
 Vvveb.Components.extend("_base", "html/listitem", {
     name: "List Item",
     classes: ["list-group-item"],
-    html: '<li class="list-group-item"><span class="badge">14</span> Cras justo odio</li>'
+    html: '<li class="list-group-item"><span class="badge bg-primary">14</span> Cras justo odio</li>',
+	properties: [{
+        name: "Background",
+        key: "background",
+        htmlAttr: "class",
+        validValues:["list-group-item-primary", "list-group-item-secondary", "list-group-item-success", "list-group-item-danger", "list-group-item-warning", "list-group-item-info", "list-group-item-light", "list-group-item-dark"],
+        inputtype: SelectInput,
+        data: {
+            options: [{
+                value: "",
+                text: "Default"
+            },{
+                value: "list-group-item-primary",
+                text: "Primary"
+            },{
+                value: "list-group-item-secondary",
+                text: "Secondary"
+            },{
+                value: "list-group-item-success",
+                text: "Success"
+            },{
+                value: "list-group-item-warning",
+                text: "Warning"
+            },{
+                value: "list-group-item-danger",
+                text: "Danger"
+            },{
+                value: "list-group-item-info",
+                text: "Info"
+            },{
+                value: "list-group-item-light",
+                text: "Light"
+            },{
+                value: "list-group-item-dark",
+                text: "Dark"
+            }]
+        }
+     },	{
+        name: "Active",
+        key: "active",
+        htmlAttr: "class",
+        validValues: ["", "active"],
+        inputtype: ToggleInput,
+        inline:true,
+        col:6,
+        data: {
+            on: "active",
+            off: ""
+        }
+    },{
+        name: "Disabled",
+        key: "disabled",
+        htmlAttr: "class",
+        validValues: ["", "disabled"],
+        inputtype: ToggleInput,
+        inline:true,
+        col:6,
+        data: {
+            on: "disabled",
+            off: ""
+        }
+    }]    
 });
+
 Vvveb.Components.extend("_base", "html/breadcrumbs", {
     classes: ["breadcrumb"],
     name: "Breadcrumbs",
     image: "icons/breadcrumbs.svg",
-    html: '<ol class="breadcrumb">\
-		  <li class="breadcrumb-item active"><a href="#">Home</a></li>\
-		  <li class="breadcrumb-item active"><a href="#">Library</a></li>\
-		  <li class="breadcrumb-item active">Data 3</li>\
-		</ol>'
+    html: `<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="#">Home</a></li>
+			<li class="breadcrumb-item"><a href="#">Library</a></li>
+			s<li class="breadcrumb-item active" aria-current="page"><a href="#">Book</a></li>
+		  </ol>`,
+	properties: [{
+		name: "Divider",
+		key: "--bs-breadcrumb-divider",
+		htmlAttr: "style",
+		inputtype: TextInput
+	}]        
 });
+
 Vvveb.Components.extend("_base", "html/breadcrumbitem", {
 	classes: ["breadcrumb-item"],
     name: "Breadcrumb Item",
@@ -389,16 +494,16 @@ Vvveb.Components.extend("_base", "html/pagination", {
         key: "size",
         htmlAttr: "class",
         inputtype: SelectInput,
-        validValues: ["btn-lg", "btn-sm"],
+        validValues: ["pagination-lg", "pagination-sm"],
         data: {
             options: [{
                 value: "",
                 text: "Default"
-            }, {
-                value: "btn-lg",
+            },{
+                value: "pagination-lg",
                 text: "Large"
-            }, {
-                value: "btn-sm",
+            },{
+                value: "pagination-sm",
                 text: "Small"
             }]
         }
@@ -412,10 +517,10 @@ Vvveb.Components.extend("_base", "html/pagination", {
             options: [{
                 value: "",
                 text: "Default"
-            }, {
+            },{
                 value: "justify-content-center",
                 text: "Center"
-            }, {
+            },{
                 value: "justify-content-end",
                 text: "Right"
             }]
@@ -431,8 +536,18 @@ Vvveb.Components.extend("_base", "html/pageitem", {
         key: "href",
         htmlAttr: "href",
         child:".page-link",
-        inputtype: TextInput
-    }, {
+        inputtype: LinkInput
+    },{
+        name: "Active",
+        key: "active",
+        htmlAttr: "class",
+        validValues: ["active"],
+        inputtype: ToggleInput,
+        data: {
+            on: "active",
+            off: ""
+        }
+    },{
         name: "Disabled",
         key: "disabled",
         htmlAttr: "class",
@@ -470,16 +585,16 @@ Vvveb.Components.extend("_base", "html/progress", {
             options: [{
                 value: "",
                 text: "None"
-            }, {
+            },{
                 value: "w-25",
                 text: "25%"
-            }, {
+            },{
                 value: "w-50",
                 text: "50%"
-            }, {
+            },{
                 value: "w-75",
                 text: "75%"
-            }, {
+            },{
                 value: "w-100",
                 text: "100%"
             }]
@@ -495,7 +610,7 @@ Vvveb.Components.extend("_base", "html/progress", {
         data: {
             options: bgcolorSelectOptions
         }
-    }, {
+    },{
         name: "Striped",
         key: "striped",
         child:".progress-bar",
@@ -506,7 +621,7 @@ Vvveb.Components.extend("_base", "html/progress", {
             on: "progress-bar-striped",
             off: "",
         }
-    }, {
+    },{
         name: "Animated",
         key: "animated",
         child:".progress-bar",
@@ -523,30 +638,31 @@ Vvveb.Components.extend("_base", "html/navbar", {
     classes: ["navbar"],
     image: "icons/navbar.svg",
     name: "Nav Bar",
-    html: '<nav class="navbar navbar-expand-lg navbar-light bg-light">\
-		  <a class="navbar-brand" href="#">Navbar</a>\
-		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">\
-			<span class="navbar-toggler-icon"></span>\
-		  </button>\
-		\
-		  <div class="collapse navbar-collapse" id="navbarSupportedContent">\
-			<ul class="navbar-nav me-auto">\
-			  <li class="nav-item active">\
-				<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>\
-			  </li>\
-			  <li class="nav-item">\
-				<a class="nav-link" href="#">Link</a>\
-			  </li>\
-			  <li class="nav-item">\
-				<a class="nav-link disabled" href="#">Disabled</a>\
-			  </li>\
-			</ul>\
-			<form class="form-inline my-2 my-lg-0">\
-			  <input class="form-control me-sm-2" type="text" placeholder="Search" aria-label="Search">\
-			  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>\
-			</form>\
-		  </div>\
-		</nav>',
+    html: `<nav class="navbar navbar-expand-lg bg-body-secondary bg-body-tertiary">
+			  <div class="container-fluid">
+				<a class="navbar-brand" href="#">Navbar</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+				  <span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+				  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+					  <a class="nav-link active" aria-current="page" href="#">Home</a>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link" href="#">Link</a>
+					</li>
+					<li class="nav-item">
+					  <a class="nav-link disabled">Disabled</a>
+					</li>
+				  </ul>
+				  <form class="d-flex" role="search">
+					<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+					<button class="btn btn-outline-success" type="submit">Search</button>
+				  </form>
+				</div>
+			  </div>
+			</nav>`,
     
     properties: [{
         name: "Color theme",
@@ -558,10 +674,10 @@ Vvveb.Components.extend("_base", "html/navbar", {
             options: [{
                 value: "",
                 text: "Default"
-            }, {
+            },{
                 value: "navbar-light",
                 text: "Light"
-            }, {
+            },{
                 value: "navbar-dark",
                 text: "Dark"
             }]
@@ -575,7 +691,7 @@ Vvveb.Components.extend("_base", "html/navbar", {
         data: {
             options: bgcolorSelectOptions
         }
-    }, {
+    },{
         name: "Placement",
         key: "placement",
         htmlAttr: "class",
@@ -585,13 +701,13 @@ Vvveb.Components.extend("_base", "html/navbar", {
             options: [{
                 value: "",
                 text: "Default"
-            }, {
+            },{
                 value: "fixed-top",
                 text: "Fixed Top"
-            }, {
+            },{
                 value: "fixed-bottom",
                 text: "Fixed Bottom"
-            }, {
+            },{
                 value: "sticky-top",
                 text: "Sticky top"
             }]
@@ -599,288 +715,17 @@ Vvveb.Components.extend("_base", "html/navbar", {
     }]
 });
 
-Vvveb.Components.extend("_base", "html/form", {
-    nodes: ["form"],
-    image: "icons/form.svg",
-    name: "Form",
-    html: '<form><div class="mb-3"><label>Text</label><input type="text" class="form-control"></div></div></form>',
-    properties: [{
-        name: "Style",
-        key: "style",
-        htmlAttr: "class",
-        validValues: ["", "form-search", "form-inline", "form-horizontal"],
-        inputtype: SelectInput,
-        data: {
-            options: [{
-                value: "",
-                text: "Default"
-            }, {
-                value: "form-search",
-                text: "Search"
-            }, {
-                value: "form-inline",
-                text: "Inline"
-            }, {
-                value: "form-horizontal",
-                text: "Horizontal"
-            }]
-        }
-    }, {
-        name: "Action",
-        key: "action",
-        htmlAttr: "action",
-        inputtype: TextInput
-    }, {
-        name: "Method",
-        key: "method",
-        htmlAttr: "method",
-        inputtype: TextInput
-    }]
-});
-
-Vvveb.Components.extend("_base", "html/table", {
-    nodes: ["table"],
-    classes: ["table"],
-    image: "icons/table.svg",
-    name: "Table",
-    html: '<table class="table">\
-		  <thead>\
-			<tr>\
-			  <th>#</th>\
-			  <th>First Name</th>\
-			  <th>Last Name</th>\
-			  <th>Username</th>\
-			</tr>\
-		  </thead>\
-		  <tbody>\
-			<tr>\
-			  <th scope="row">1</th>\
-			  <td>Mark</td>\
-			  <td>Otto</td>\
-			  <td>@mdo</td>\
-			</tr>\
-			<tr>\
-			  <th scope="row">2</th>\
-			  <td>Jacob</td>\
-			  <td>Thornton</td>\
-			  <td>@fat</td>\
-			</tr>\
-			<tr>\
-			  <th scope="row">3</th>\
-			  <td>Larry</td>\
-			  <td>the Bird</td>\
-			  <td>@twitter</td>\
-			</tr>\
-		  </tbody>\
-		</table>',
-    properties: [
-	{
-        name: "Type",
-        key: "type",
-		htmlAttr: "class",
-        validValues: ["table-primary", "table-secondary", "table-success", "table-danger", "table-warning", "table-info", "table-light", "table-dark", "table-white"],
-        inputtype: SelectInput,
-        data: {
-            options: [{
-				value: "Default",
-				text: ""
-			}, {
-				value: "table-primary",
-				text: "Primary"
-			}, {
-				value: "table-secondary",
-				text: "Secondary"
-			}, {
-				value: "table-success",
-				text: "Success"
-			}, {
-				value: "table-danger",
-				text: "Danger"
-			}, {
-				value: "table-warning",
-				text: "Warning"
-			}, {
-				value: "table-info",
-				text: "Info"
-			}, {
-				value: "table-light",
-				text: "Light"
-			}, {
-				value: "table-dark",
-				text: "Dark"
-			}, {
-				value: "table-white",
-				text: "White"
-			}]
-        }
-    },
-	{
-        name: "Responsive",
-        key: "responsive",
-        htmlAttr: "class",
-        validValues: ["table-responsive"],
-        inputtype: ToggleInput,
-        data: {
-            on: "table-responsive",
-            off: ""
-        }
-    },   
-	{
-        name: "Small",
-        key: "small",
-        htmlAttr: "class",
-        validValues: ["table-sm"],
-        inputtype: ToggleInput,
-        data: {
-            on: "table-sm",
-            off: ""
-        }
-    },   
-	{
-        name: "Hover",
-        key: "hover",
-        htmlAttr: "class",
-        validValues: ["table-hover"],
-        inputtype: ToggleInput,
-        data: {
-            on: "table-hover",
-            off: ""
-        }
-    },   
-	{
-        name: "Bordered",
-        key: "bordered",
-        htmlAttr: "class",
-        validValues: ["table-bordered"],
-        inputtype: ToggleInput,
-        data: {
-            on: "table-bordered",
-            off: ""
-        }
-    },   
-	{
-        name: "Striped",
-        key: "striped",
-        htmlAttr: "class",
-        validValues: ["table-striped"],
-        inputtype: ToggleInput,
-        data: {
-            on: "table-striped",
-            off: ""
-        }
-    },   
-	{
-        name: "Inverse",
-        key: "inverse",
-        htmlAttr: "class",
-        validValues: ["table-inverse"],
-        inputtype: ToggleInput,
-        data: {
-            on: "table-inverse",
-            off: ""
-        }
-    },   
-    {
-        name: "Head options",
-        key: "head",
-        htmlAttr: "class",
-        child:"thead",
-        inputtype: SelectInput,
-        validValues: ["", "thead-inverse", "thead-default"],
-        data: {
-            options: [{
-                value: "",
-                text: "None"
-            }, {
-                value: "thead-default",
-                text: "Default"
-            }, {
-                value: "thead-inverse",
-                text: "Inverse"
-            }]
-        }
-    }]
-});
-Vvveb.Components.extend("_base", "html/tablerow", {
-    nodes: ["tr"],
-    name: "Table Row",
-    html: "<tr><td>Cell 1</td><td>Cell 2</td><td>Cell 3</td></tr>",
-    properties: [{
-        name: "Type",
-        key: "type",
-        htmlAttr: "class",
-        inputtype: SelectInput,
-        validValues: ["", "success", "danger", "warning", "active"],
-        data: {
-            options: [{
-                value: "",
-                text: "Default"
-            }, {
-                value: "success",
-                text: "Success"
-            }, {
-                value: "error",
-                text: "Error"
-            }, {
-                value: "warning",
-                text: "Warning"
-            }, {
-                value: "active",
-                text: "Active"
-            }]
-        }
-    }]
-});
-Vvveb.Components.extend("_base", "html/tablecell", {
-    nodes: ["td"],
-    name: "Table Cell",
-    html: "<td>Cell</td>"
-});
-Vvveb.Components.extend("_base", "html/tableheadercell", {
-    nodes: ["th"],
-    name: "Table Header Cell",
-    html: "<th>Head</th>"
-});
-Vvveb.Components.extend("_base", "html/tablehead", {
-    nodes: ["thead"],
-    name: "Table Head",
-    html: "<thead><tr><th>Head 1</th><th>Head 2</th><th>Head 3</th></tr></thead>",
-    properties: [{
-        name: "Type",
-        key: "type",
-        htmlAttr: "class",
-        inputtype: SelectInput,
-        validValues: ["", "success", "danger", "warning", "info"],
-        data: {
-            options: [{
-                value: "",
-                text: "Default"
-            }, {
-                value: "success",
-                text: "Success"
-            }, {
-                value: "anger",
-                text: "Error"
-            }, {
-                value: "warning",
-                text: "Warning"
-            }, {
-                value: "info",
-                text: "Info"
-            }]
-        }
-    }]
-});
 Vvveb.Components.extend("_base", "html/tablebody", {
     nodes: ["tbody"],
     name: "Table Body",
     html: "<tbody><tr><td>Cell 1</td><td>Cell 2</td><td>Cell 3</td></tr></tbody>"
 });
 
-Vvveb.Components.add("html/gridcolumn", {
+Vvveb.Components.extend("_base", "html/gridcolumn", {
     name: "Grid Column",
-    image: "icons/grid_row.svg",
+    image: "icons/grid_column.svg",
     classesRegex: ["col-"],
+    classes: ["col"],
     html: '<div class="col-sm-4"><h3>col-sm-4</h3></div>',
     properties: [{
         name: "Column",
@@ -888,32 +733,34 @@ Vvveb.Components.add("html/gridcolumn", {
         inline:false,
         inputtype: GridInput,
         data: {hide_remove:true},
-		
+
 		beforeInit: function(node) {
-			_class = $(node).attr("class");
+			_class = node.getAttribute("class");
 			
-			var reg = /col-([^-\$ ]*)?-?(\d+)/g; 
-			var match;
+			let reg = /col(-[^-\$ ]*)?-?(\d+)?/g; 
+			let match;
 
 			while ((match = reg.exec(_class)) != null) {
-				this.data["col" + ((match[1] != undefined)?"_" + match[1]:"")] = match[2];
+				let key = "col" + ((match[1] != undefined) ? "_" + match[1].replace('-','') : "");
+				this.data[key] = match[2] ?? '';
 			}
 		},
 		
 		onChange: function(node, value, input) {
-			var _class = node.attr("class");
+			let _class = node.getAttribute("class");
 			
 			//remove previous breakpoint column size
 			_class = _class.replace(new RegExp(input.name + '-\\d+?'), '');
 			//add new column size
 			if (value) _class +=  ' ' + input.name + '-' + value;
-			node.attr("class", _class);
+			node.setAttribute("class", _class);
 			
 			return node;
 		},				
 	}]
 });
-Vvveb.Components.add("html/gridrow", {
+
+Vvveb.Components.extend("_base", "html/gridrow", {
     name: "Grid Row",
     image: "icons/grid_row.svg",
     classes: ["row"],
@@ -922,21 +769,21 @@ Vvveb.Components.add("html/gridrow", {
 		name: "html/gridcolumn",
 		classesRegex: ["col-"],
 	}],
-	beforeInit: function (node)
-	{
+	beforeInit: function (node) {
 		properties = [];
-		var i = 0;
-		var j = 0;
+		let i = 0;
+		let j = 0;
 		
-		$(node).find('[class*="col-"]').each(function() {
-			_class = $(this).attr("class");
+		node.querySelectorAll('[class*="col-"],.col').forEach(el => {
+			_class = el.getAttribute("class");
 			
-			var reg = /col-([^-\$ ]*)?-?(\d+)/g; 
-			var match;
-			var data = {};
+			let reg = /col(-[^-\$ ]*)?-?(\d+)?/g; 
+			let match;
+			let data = {};
 
 			while ((match = reg.exec(_class)) != null) {
-				data["col" + ((match[1] != undefined)?"_" + match[1]:"")] = match[2];
+				let key = "col" + ((match[1] != undefined) ? "_" + match[1].replace('-','') : "");
+				data[key] = match[2] ?? '';
 			}
 			
 			i++;
@@ -944,34 +791,30 @@ Vvveb.Components.add("html/gridrow", {
 				name: "Column " + i,
 				key: "column" + i,
 				//index: i - 1,
-				columnNode: this,
+				columnNode: el,
 				col:12,
 				inline:false,
 				inputtype: GridInput,
 				data: data,
 				onChange: function(node, value, input) {
 
-					//column = $('[class*="col-"]:eq(' + this.index + ')', node);
-					var column = $(this.columnNode);
+					let column = this.columnNode;
 					
 					//if remove button is clicked remove column and render row properties
-					if (input.nodeName == 'BUTTON')
-					{
+					if (input.nodeName == 'BUTTON') {
 						column.remove();
 						Vvveb.Components.render("html/gridrow");
 						return node;
 					}
 
 					//if select input then change column class
-					_class = column.attr("class");
+					_class = column.getAttribute("class");
 					
 					//remove previous breakpoint column size
 					_class = _class.replace(new RegExp(input.name + '-\\d+?'), '');
 					//add new column size
 					if (value) _class +=  ' ' + input.name + '-' + value;
-					column.attr("class", _class);
-					
-					//console.log(this, node, value, input, input.name);
+					column.setAttribute("class", _class);
 					
 					return node;
 				},	
@@ -982,54 +825,105 @@ Vvveb.Components.add("html/gridrow", {
 		this.properties = this.properties.filter(function(item) {
 			return item.key.indexOf("column") === -1;
 		});
-		
-		//add remaining properties to generated column properties
-		properties.push(this.properties[0]);
-		
-		this.properties = properties;
+
+		//add remaining properties to generated column properties, put first 2 align properties first
+		this.properties = this.properties.slice(0,4).concat(properties, this.properties.slice(4));
+
 		return node;
 	},
     
     properties: [{
-        name: "Column",
-        key: "column1",
-        inputtype: GridInput
-	}, {
-        name: "Column",
-        key: "column1",
-        inline:true,
-        col:12,
-        inputtype: GridInput
-	}, {
-        name: "",
-        key: "addChild",
-        inputtype: ButtonInput,
-        data: {text:"Add column", icon:"la la-plus"},
-        onChange: function(node)
-        {
-			 $(node).append('<div class="col-3">Col-3</div>');
-			 
-			 //render component properties again to include the new column inputs
-			 Vvveb.Components.render("html/gridrow");
-			 
-			 return node;
-		}
-	}]
-});
-
-
-Vvveb.Components.extend("_base", "html/paragraph", {
-    nodes: ["p"],
-    name: "Paragraph",
-	image: "icons/paragraph.svg",
-	html: '<p>Lorem ipsum</p>',
-    properties: [{
-        name: "Text align",
-        key: "text-align",
+        name: "Direction",
+        key: "direction",
         htmlAttr: "class",
         inline:false,
-        inputtype: SelectInput,
-        validValues: ["", "text-start", "text-center", "text-end"],
+        validValues: ["", "flex-row", "flex-row-reverse", "flex-column", "flex-column-reverse"],
+        inputtype: RadioButtonInput,
+        data: {
+			extraclass:"btn-group-sm btn-group-fullwidth",
+            options: [{
+                value: "",
+                icon:"la la-times",
+                //text: "None",
+                title: "Default",
+                checked:true,
+            },{
+                value: "flex-row",
+                //text: "Left",
+                title: "Row - horizontal",
+                icon:"la la-arrow-right",
+                checked:false,
+            },{
+                value: "flex-column",
+                //text: "Center",
+                title: "Column - vertical",
+                icon:"la la-arrow-down",
+                checked:false,
+            },{
+                value: "flex-row-reverse",
+                //text: "Right",
+                title: "Row - reversed",
+                icon:"la la-arrow-left",
+                checked:false,
+            },{
+                value: "flex-column-reverse",
+                //text: "Center",
+                title: "Column - reversed",
+                icon:"la la-arrow-up",
+                checked:false,
+            }],
+        },
+	},{       
+		name: "Vertical align",
+        key: "vertical-align",
+        htmlAttr: "class",
+        inline:false,
+        validValues: ["", "align-items-start", "align-items-center", "align-items-end", "align-items-baseline", "align-items-stretch"],
+        inputtype: RadioButtonInput,
+        data: {
+            extraclass:"btn-group-sm btn-group-fullwidth",
+            options: [{
+                value: "",
+                icon:"la la-times",
+                //text: "None",
+                title: "None",
+                checked:true,
+            },{
+                value: "align-items-start",
+                //text: "Left",
+                title: "Start",
+                icon:"la la-align-left",
+                checked:false,
+            },{
+                value: "align-items-center",
+                //text: "Center",
+                title: "Center",
+                icon:"la la-align-center",
+                checked:false,
+            },{
+                value: "align-items-end",
+                //text: "Right",
+                title: "End",
+                icon:"la la-align-right",
+                checked:false,
+            },{
+                value: "align-items-baseline",
+                title: "Baseline",
+                icon:"la la-indent",
+                checked:false,
+            },{
+                value: "align-items-stretch",
+                title: "Stretch",
+                icon:"la la-align-justify",
+                checked:false,
+            }],
+        },
+	},{
+        name: "Horizontal align",
+        key: "horizontal-align",
+        htmlAttr: "class",
+        inline:false,
+        validValues: ["", "justify-content-start", "justify-content-center", "justify-content-end", "justify-content-around", "justify-content-between", "justify-content-evenly"],
         inputtype: RadioButtonInput,
         data: {
 			extraclass:"btn-group-sm btn-group-fullwidth",
@@ -1039,25 +933,97 @@ Vvveb.Components.extend("_base", "html/paragraph", {
                 //text: "None",
                 title: "None",
                 checked:true,
-            }, {
-                value: "text-start",
+            },{
+                value: "justify-content-start",
                 //text: "Left",
-                title: "text-start",
+                title: "Start",
                 icon:"la la-align-left",
                 checked:false,
-            }, {
-                value: "text-center",
+            },{
+                value: "justify-content-center",
                 //text: "Center",
                 title: "Center",
                 icon:"la la-align-center",
                 checked:false,
-            }, {
-                value: "text-end",
+            },{
+                value: "justify-content-end",
                 //text: "Right",
-                title: "Right",
+                title: "End",
                 icon:"la la-align-right",
+                checked:false
+			},{
+                value: "justify-content-around",
+                //text: "Left",
+                title: "Around",
+                icon:"la la-indent",
+                checked:false,
+            },{
+                value: "justify-content-between",
+                //text: "Center",
+                title: "Between",
+                icon:"la la-outdent",
+                checked:false,
+            },{
+                value: "justify-content-evenly",
+                //text: "Right",
+                title: "Evenly",
+                icon:"la la-align-justify",
                 checked:false,
             }],
         },
+	},{       
+        name: "Wrap",
+        key: "wrap",
+        htmlAttr: "class",
+        inline:false,
+        validValues: ["", "flex-wrap", "flex-nowrap"],
+        inputtype: RadioButtonInput,
+        data: {
+            extraclass:"btn-group-sm btn-group-fullwidth",
+            options: [{
+                value: "",
+                icon:"la la-times",
+                //text: "None",
+                title: "None",
+                checked:true,
+            },{
+                value: "flex-wrap",
+                //text: "Left",
+                title: "Wrap",
+                icon:"la la-undo",
+                checked:false,
+            },{
+                value: "flex-nowrap",
+                //text: "Center",
+                title: "No wrap",
+                icon:"la la-arrow-right",
+                checked:false,
+            }],
+        },
+	},{
+        name: "Column",
+        key: "column1",
+        inputtype: GridInput
+	},{
+        name: "Column",
+        key: "column1",
+        inline:true,
+        col:12,
+        inputtype: GridInput
+	},{
+        name: "",
+        key: "addChild",
+        inputtype: ButtonInput,
+        data: {text:"Add column", icon:"la la-plus"},
+        onChange: function(node)
+        {
+			 node.append(generateElements('<div class="col-3"><h3>Col-3</h3></div>')[0]);
+			 
+			 //render component properties again to include the new column inputs
+			 Vvveb.Components.render("html/gridrow");
+			 
+			 return node;
+		}
 	}]
 });
+

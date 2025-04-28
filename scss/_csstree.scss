@@ -2,25 +2,33 @@
 .tree
 {
 	width:100%;
+	padding:0;
 
-	ol
+	> ol
 	{
-		padding: 0.3rem 0 0 2rem;
+		padding: 0rem 0 0 0rem;
 		margin:0;
 		//width: 300px;
-		min-width: $builder-right-panel-width + 15;
+		//min-width: $builder-right-panel-width + 15;
+		//margin:0 0.5rem;
 		font-size:12px;
-		font-weight:500;
-		color:#555;
+		color:var(--bs-body-color);
 
 		li 
 		{ 
 			position: relative; 
-			margin-left: -15px;
-			margin-bottom: 0.3rem;
+			//margin-left: -15px;
+			margin-bottom: 0.1rem;
 			list-style: none;
-			color:#555;
+			color:var(--bs-body-color);
 			overflow:hidden;
+			
+			> label {
+				html[data-bs-theme="dark"] & { 
+					//color: #333;
+					//filter: invert(100%);
+				}
+			}
 			
 			&:hover
 			{
@@ -29,11 +37,11 @@
 			
 			&.active
 			{
-				//background-color:$primary;
+				//background-color:var(--bs-link-color);
 				//color:#fff;
 				> label > span, > a > span  
 				{
-					color:#007bff;
+					//color:#007bff;
 					//font-weight:500;
 				}
 			}
@@ -41,22 +49,58 @@
 		
 		li.file
 		{
+			border:1px solid transparent;
+			
+			&:hover, &.active {
+				//background-color:rgba(var(--bs-link-color-rgb), 0.05);
+				//color:var(--bs-link-color);
+				color:var(--bs-link-hover-color);
+			}
+			
+			&:hover {
+				background-color:rgba(var(--bs-link-color-rgb), 0.05);
+				//border: 1px solid rgba(var(--bs-link-color), 0.1);
+				
+				.file-actions {
+					display:block;
+				}
+			}
+			
 			> label
 			{
-				background: url(../libs/builder/icons/file.svg) 24px 0px no-repeat;
-				background-size:21px 21px;
+				background-image: url(../libs/builder/icons/file.svg);
+				background-position:8px 4px;
+				background-size:19px 19px;
+				background-repeat:no-repeat;
 				cursor: pointer;
 				display: block;
-				padding-left: 56px;
+				padding-left: 33px;
 				margin:0;
 				font-size:12px;
-				font-weight:500;
 				line-height:28px;
+				max-height:2rem;
 
 
 				&:hover
 				{
-					color:$primary;
+					color:var(--bs-link-color);
+				}
+			}
+			
+			.file-actions {
+				display:none;
+				position:absolute;
+				background-color: var(--bs-body-bg);				
+				top:0px;
+				right:2px;
+				
+				.btn {
+					padding:0rem 0.2rem;
+					margin-right:1px;
+					font-size:0.875rem;
+					line-height:1;
+					border-radius:4px;
+					--bs-btn-border-color: rgba(var(--bs-link-color-rgb), 0.25);
 				}
 			}
 		}
@@ -69,6 +113,22 @@
 			}
 		}
 
+		li.page
+		{
+			> label
+			{
+				background-image: url(../libs/builder/icons/post.svg);
+			}
+		}
+
+		li.url
+		{
+			> label
+			{
+				background-image: url(../../../js/vvvebjs/icons/panel.svg);
+			}
+		}
+
 		li input
 		{
 			position: absolute;
@@ -77,15 +137,15 @@
 			opacity: 0;
 			z-index: 2;
 			cursor: pointer;
-			height: 1em;
-			width: 1em;
+			height: 2em;
+			width: 2em;
 			top: 0;
 			
 			 + ol
 			{
 				background: url(../libs/builder/icons/arrow-right.svg) 5px .3rem no-repeat;
-				background-size:10px 10px;
-				margin: -1.8rem 0 0 0rem;
+				background-size:12px 12px;
+				margin: -1.5rem 0 0 0rem;
 				padding: 2rem 0 0 2rem;
 				height: 0;
 				
@@ -96,26 +156,37 @@
 		li label
 		{
 			background: url(../libs/builder/icons/folder.svg) 24px 1px no-repeat;
-			background-size:24px 24px;
+			background-size:20px 20px;
 			cursor: pointer;
 			display: block;
-			padding-left: 56px;
+			padding-left: 50px;
 			margin:0px;
 			font-size:12px;
-			font-weight:500;
-			line-height:28px;
+			line-height:24px;
 		}
 
 		li input:checked + ol
 		{
-			background: url(../libs/builder/icons/arrow-down.svg) 5px .1rem no-repeat;
-			background-size:10px 10px;
-			margin: -1.8em 0 0 0rem;
-			padding: 2rem 0 0 2rem;
+			background: url(../libs/builder/icons/arrow-down.svg) 5px .6rem no-repeat;
+			background-size:12px 12px;
+			margin: -2.5em 0 0 0rem;
+			padding: 2rem 0 0 2.5rem;
 			height: auto;
 
-			> li { display: block; margin: 0 0 0.5em;  /* 2px */}
-			> li:last-child { margin: 0 0 0.7em; /* 1px */ }
+			> li { display: block; margin: 0 0 0.1em;  /* 2px */}
+			> li:last-child { margin: 0 0 0.3em; /* 1px */ }
 		}
+	}
+}
+
+//dark mode support for svg images 
+[data-bs-theme="dark"] {
+	.tree > ol li.active label {
+		color: var(--bs-primary);
+	}
+	
+	.tree > ol li label {
+		filter:invert(93%) hue-rotate(180deg);
+		color: var(--bs-dark);
 	}
 }

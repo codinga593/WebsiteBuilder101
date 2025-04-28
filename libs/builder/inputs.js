@@ -16,17 +16,16 @@ limitations under the License.
 https://github.com/givanz/VvvebJs
 */
 
-var Input = {
+let Input = {
 	
 	init: function(name) {
 	},
 
 
-	onChange: function(event, node) {
-		
-		if (event.data && event.data.element)
-		{
-			event.data.element.trigger('propertyChange', [this.value, this]);
+	onChange: function(event, node, input) {
+		if (event && event.target) {
+			const e = new CustomEvent('propertyChange', { detail: {value : input.value ?? this.value, input: this, origEvent:event} });
+			event.currentTarget.dispatchEvent(e);
 		}
 	},
 
@@ -35,75 +34,95 @@ var Input = {
 	},
 
 	setValue: function(value) {
-		$('input', this.element).val(value);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('input');
+		
+			if (input) { 
+				input.value = value;
+			}
+		}
 	},
 	
 	render: function(name, data) {
-		this.element = $(this.renderTemplate(name, data));
+		let html = this.renderTemplate(name, data);
+		this.element = generateElements(html);
 		
 		//bind events
 		if (this.events)
-		for (var i in this.events)
-		{
+		for (let i in this.events) {
 			ev = this.events[i][0];
 			fun = this[ this.events[i][1] ];
 			el = this.events[i][2];
 		
-			this.element.on(ev, el, {element: this.element, input:this}, fun);
+			this.element[0].addEventListener(ev, function (ev, el, fun, target, event) {
+			  if (event.target.closest(el)) {
+				  //target, event, element, input
+				return fun.call(event.target, event, target, this);
+			  }
+			}.bind(this, ev, el, fun, this.element[0]));		
 		}
 
-		return this.element;
+		return this.element[0];
 	}
 };
 
-var TextInput = $.extend({}, Input, {
+let TextInput = { ...Input, ...{
 
     events: [
-	//event, listener, child element
-        ["blur", "onChange", "input"],
+        //event, listener, child element
+        ["focusout", "onChange", "input"],
 	 ],
 	
 	init: function(data) {
 		return this.render("textinput", data);
 	},
   }
-);
+}
 
-var TextareaInput = $.extend({}, Input, {
+let TextareaInput = { ...Input, ...{
 
     events: [
         ["keyup", "onChange", "textarea"],
 	 ],
 	
 	setValue: function(value) {
-		$('textarea', this.element).val(value);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('textarea');
+		
+			if (input) { 
+				input.value = value;
+			}
+		}
 	},
 	
 	init: function(data) {
 		return this.render("textareainput", data);
 	},
-  }
-);
+  }	
+}
 
-var CheckboxInput = $.extend({}, Input, {
-
-	onChange: function(event, node) {
-		
-		if (event.data && event.data.element)
-		{
-			event.data.element.trigger('propertyChange', [this.checked, this]);
-		}
-	},
+let CheckboxInput = { ...Input, ...{
 
     events: [
-        ["change", "onChange", "input"],
+        ["change", "onCheck", "input"],
 	 ],
 	
+	onCheck: function(event, node, input) {
+		input.value = this.checked;
+		return input.onChange.call(this, event, node, input);
+	},
+
 	setValue: function(value) {
-		if (value) {
-			$('input', this.element).attr("checked", true);
-		} else {
-			$('input', this.element).attr("checked", false);
+		if (this.element[0]) {
+			let input = this.element[0].querySelector('input');
+
+			if (input) { 
+				if (value) {
+					input.checked = true;
+				} else {
+					input.checked = false;
+				}
+			}
 		}
 	},
 	
@@ -111,9 +130,9 @@ var CheckboxInput = $.extend({}, Input, {
 		return this.render("checkboxinput", data);
 	},
   }
-);
+}
 
-var SelectInput = $.extend({}, Input, {
+let SelectInput = { ...Input, ...{
 	
     events: [
         ["change", "onChange", "select"],
@@ -121,17 +140,22 @@ var SelectInput = $.extend({}, Input, {
 	
 
 	setValue: function(value) {
-		$('select', this.element).val(value);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('select');
+		
+			if (input) { 
+				input.value = value;
+			}
+		}
 	},
 	
 	init: function(data) {
 		return this.render("select", data);
 	},
-	
   }
-);
+}
 
-var IconSelectInput = $.extend({}, Input, {
+let IconSelectInput = { ...Input, ...{
 	
     events: [
         ["change", "onChange", "select"],
@@ -139,30 +163,137 @@ var IconSelectInput = $.extend({}, Input, {
 	
 
 	setValue: function(value) {
-		$('select', this.element).val(value);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('select');
+		
+			if (input) { 
+				input.value = value;
+			}
+		}
 	},
 	
 	init: function(data) {
 		return this.render("icon-select", data);
 	},
-	
   }
-);
+}
+
+let HtmlListSelectInput = { ...Input, ...{
+	
+	data:{},
+	cache:{},
+	
+    events: [
+        //["click", "onChange", "li"],
+        ["change", "onListChange", "select"],
+        ["keyup", "searchElement", "input.search"],
+        ["click", "clearSearch", "button.clear-backspace"],
+	 ],
+	
+	clearSearch : function(event, element, input) {
+		let search = element.querySelector("input.search");
+		if (search) {
+			search.value = "";
+			input.searchElement(event, element, input);
+		}
+		
+		search.dispatchEvent(new KeyboardEvent("keyup", {
+			bubbles: true,
+			cancelable: true,
+		}));
+	},
 
 
-var LinkInput = $.extend({}, TextInput, {
+	searchElement : function(event, element, input) {
+		searchText = this.value;
+		
+		delay(() => {
+			element.querySelectorAll("li").forEach((el, i) => {
+				
+				if (!searchText || el.title.indexOf(searchText) > -1) { 
+					el.style.display = '';
+				} else {
+					el.style.display = 'none';
+				}
+			});
+			
+		}, 500);
+	},	
+
+	onElementClick: function(event, element, input) {
+		let data = input.data;
+		let svg = this.closest(data.insertElement);
+		let value = svg.outerHTML ?? "<svg></svg>";
+		input.value = value;
+		let ret = input.onChange.call(this, event, element, input);
+		
+		return element;
+	},
+	
+	onListChange: function(event, element, input) {
+		let url = input.data.url.replace('{value}', this.value);
+		let elements = element.querySelector(".elements");
+		
+		elements.innerHTML = `<div class="p-4"><div class="spinner-border spinner-border-sm" role="status">
+		  <span class="visually-hidden">Loading...</span>
+		</div> Loading...</div>`;
+		
+		//cache ajax requests
+		if (input.cache[url] != undefined) {
+			elements.innerHTML = input.cache[url];
+		} else {
+			fetch(url)
+			.then((response) => {
+				if (!response.ok) { throw new Error(response) }
+				return response.text()
+			})
+			.then((text) => {
+					input.cache[url] = text;
+					elements.innerHTML = text;
+			})
+			.catch(error => {
+				console.log(error.statusText);
+				displayToast("bg-danger", "Error", "Error loading list");
+			});
+		}
+	},
+	
+	setValue: function(value) {
+		let select = this.element[0].querySelector("select");
+		if (value && select) {
+			select.value = value;
+		}
+	},
+	
+	init: function(data) {
+		this.data = data;
+		this.events.push(["click", "onElementClick", data.clickElement]);
+		let template = this.render("html-list-select", data);
+		let select = template.querySelector("select");
+		this.onListChange.call(select, new Event('change'), template, this);
+		return template;
+	},
+  }
+}
+
+let LinkInput = { ...TextInput, ...{
 
     events: [
         ["change", "onChange", "input"],
 	 ],
-	
+	/*
+	setValue: function(value) {
+		//value = value.replace(/(?<!\/)www\./, 'https://www.');
+		this.element.querySelector('input').value = value;
+	},
+	*/
 	init: function(data) {
 		return this.render("textinput", data);
 	},
   }
-);
+}
 
-var DateInput = $.extend({}, TextInput, {
+let DateInput = { ...TextInput, ...{
 
     events: [
         ["change", "onChange", "input"],
@@ -172,36 +303,32 @@ var DateInput = $.extend({}, TextInput, {
 		return this.render("dateinput", data);
 	},
   }
-);
+}
 
-var RangeInput = $.extend({}, Input, {
+let RangeInput = { ...Input, ...{
 
     events: [
-        ["change", "onChange", "input"],
+        ["change", "onRangeChange", "input"],
 	 ],
 	 
-	onChange: function(event, node) {
-		
-		if (event.data && event.data.element)
-		{
-			$('[data-input-value]', this.parentNode).val(this.value);
-			event.data.element.trigger('propertyChange', [this.value, this]);
-		}
-	},
-	 
-	
+	onRangeChange: function(event, node, input) {
+		this.parentNode.querySelector('input[type=number]').value = this.value;
+		this.parentNode.querySelector('input[type=range]').value = this.value;
+		return input.onChange.call(this, event, node, input);
+	},	 
+
 	setValue: function(value) {
-		//$('[data-input-value]', this.element).text(value);
-		return $('input', this.element).val(value);
+		this.element[0].querySelector('input[type=number]').value = value;
+		this.element[0].querySelector('input[type=range]').value = value;
 	},
 	
 	init: function(data) {
 		return this.render("rangeinput", data);
 	},
   }
-);
+}
 
-var NumberInput = $.extend({}, Input, {
+let NumberInput = { ...Input, ...{
 
     events: [
         ["change", "onChange", "input"],
@@ -211,70 +338,79 @@ var NumberInput = $.extend({}, Input, {
 		return this.render("numberinput", data);
 	},
   }
-);
+}
 
-var CssUnitInput = $.extend({}, Input, {
+let CssUnitInput = { ...Input, ...{
 
 	number:0,
 	unit:"px",
 
     events: [
-        ["change", "onChange", "select"],
-        ["change keyup mouseup", "onChange", "input"],
+        ["change", "onInputChange", "select"],
+        ["change", "onInputChange", "input"],
+        ["keyup", "onInputChange", "input"],
 	 ],
 		
-	onChange: function(event) {
-		
-		if (event.data && event.data.element)
-		{
-			input = event.data.input;
+	onInputChange: function(event, node, input) {
+		if (node) {
+			let number = node.querySelector("input").value;
+			let unit = node.querySelector("select").value;
+
 			if (this.value != "") input[this.name] = this.value;// this.name = unit or number	
-			if (input['unit'] == "") input['unit'] = "px";//if unit is not set use default px
-			
-			var value = "";	
-			if (input.unit == "auto")  {
-				$(event.data.element).addClass("auto"); 
-				value = input.unit;
+			if (unit == "") unit = "px";//if unit is not set use default px
+		
+			let value = "";	
+			if (unit == "auto")  {
+				node.classList.add("auto");
+				value = unit;
 			}
-			else 
-			{
-				$(event.data.element).removeClass("auto"); 
-				value = input.number + input.unit;
+			else  {
+				node.classList.remove("auto");
+				value = number + (unit ? unit : "");
 			}
 			
-			event.data.element.trigger('propertyChange', [value, this]);
+			input.value = value;
+
+			return input.onChange.call(this, event, node, input);
 		}
 	},
 	
 	setValue: function(value) {
-		this.number = parseInt(value);
-		this.unit = value.replace(this.number, '');
-		
-		if (this.unit == "auto") $(this.element).addClass("auto");
+		if (value && this.element) {
+			let element = this.element[0];
+			this.number = parseFloat(value);
+			this.unit = value.replace(this.number, '').trim();
+			
+			if (this.unit == "auto") element.classList.add("auto");
 
-		$('input', this.element).val(this.number);
-		$('select', this.element).val(this.unit);
+			element.querySelector("input[type=number]").value = this.number;
+			element.querySelector("select").value = this.unit;
+		}
 	},
 	
 	init: function(data) {
 		return this.render("cssunitinput", data);
 	},
   }
-);
+}
 
-var ColorInput = $.extend({}, Input, {
+let ColorInput = { ...Input, ...{
 
 	 //html5 color input only supports setting values as hex colors even if the picker returns only rgb
-	 rgb2hex: function(rgb) {
-		 
-		 if (rgb) {
-			 rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+	 rgb2hex: function(value) {
+		 if (value) {
+			 value = value.trim();
 			 
-			 return (rgb && rgb.length === 4) ? "#" +
-			  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-			  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-			  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : rgb;
-		 }
+			 if (rgb = value.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i)) {
+				 
+				 return (rgb && rgb.length === 4) ? "#" +
+				  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+				  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+				  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : rgb;
+			 }
+		}
+		 
+		 return value;
 	},
 
     events: [
@@ -282,35 +418,45 @@ var ColorInput = $.extend({}, Input, {
 	 ],
 
 	setValue: function(value) {
-		$('input', this.element).val(this.rgb2hex(value));
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('input');
+		
+			if (input) { 
+				input.value = this.rgb2hex(value);
+			}
+		}
 	},
 	
 	init: function(data) {
+		//if no palette provided use default
+		if (!data.palette) {
+			data.palette = Vvveb.ColorPalette.getAll();
+		}
+		
 		return this.render("colorinput", data);
 	},
   }
-);
+}
 
-var ImageInput = $.extend({}, Input, {
+let ImageInput = { ...Input, ...{
 
     events: [
-        ["blur", "onChange", "input[type=text]"],
+        ["focusout", "onChange", "input[type=text]"],
         ["change", "onUpload", "input[type=file]"],
 	 ],
 
 	setValue: function(value) {
 
 		//don't set blob value to avoid slowing down the page		
-		if (value.indexOf("data:image") == -1)
-		{
-				$('input[type="text"]', this.element).val(value);
+		if (value.indexOf("data:image") == -1) {
+			element.querySelector('input[type="text"]').value = value;
 		}
 	},
 
 	onUpload: function(event, node) {
 
 		if (this.files && this.files[0]) {
-            var reader = new FileReader();
+            let reader = new FileReader();
             reader.onload = imageIsLoaded;
             reader.readAsDataURL(this.files[0]);
             //reader.readAsBinaryString(this.files[0]);
@@ -325,7 +471,7 @@ var ImageInput = $.extend({}, Input, {
 				
 				//return;//remove this line to enable php upload
 
-				var formData = new FormData();
+				let formData = new FormData();
 				formData.append("file", file);
     
 				$.ajax({
@@ -341,46 +487,49 @@ var ImageInput = $.extend({}, Input, {
 						event.data.element.trigger('propertyChange', [data, this]);
 						
 						//update src input
-						$('input[type="text"]', event.data.element).val(data);
+						event.data.element.querySelector('input[type="text"]').value = data;
 					},
 					error: function (data) {
 						alert(data.responseText);
 					}
 				});		
 		}
-	},
+	}		
+ }	
+}
 
-	init: function(data) {
-		return this.render("imageinput", data);
-	},
-  }
-);
-
-var FileUploadInput = $.extend({}, TextInput, {
+let FileUploadInput = { ...TextInput, ...{
 
     events: [
-        ["blur", "onChange", "input"],
+        ["focusout", "onChange", "input"],
 	 ],
 
 	init: function(data) {
 		return this.render("textinput", data);
 	},
   }
-);
+}
 
-
-var RadioInput = $.extend({}, Input, {
+let RadioInput = { ...Input, ...{
 
 	events: [
         ["change", "onChange", "input"],
 	 ],
 
 	setValue: function(value) {
-		if (value && value != "") {
-			$('input', this.element).removeAttr('checked');
-			
-			var input = $("input[value=" + value + "]", this.element);
-			input.attr("checked", "true").prop('checked', true);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('input');
+		
+			if (input) { 
+				if (value == input.value) {
+					input.setAttribute("checked", "true");
+					input.checked = true;
+				} else {
+					input.checked = false;
+					input.removeAttribute("checked");
+				}
+				
+			}
 		}
 	},
 	
@@ -388,73 +537,102 @@ var RadioInput = $.extend({}, Input, {
 		return this.render("radioinput", data);
 	},
   }
-);
+}
 
-var RadioButtonInput = $.extend({}, RadioInput, {
- 
+let RadioButtonInput = { ...RadioInput, ...{
+
+	setValue: function(value) {
+		if (this.element[0] && value) {
+			let inputs = this.element[0].querySelectorAll('input');
+			inputs.forEach((el, i) => {
+				if (value == el.value) {
+					selected = el;
+				} else {
+					el.checked = false;
+					el.removeAttribute("checked");
+				}		
+			});
+
+			selected.checked = true;
+			selected.setAttribute("checked", "checked");
+		}
+	},
+
 	init: function(data) {
 		return this.render("radiobuttoninput", data);
 	},
   }
-);
+}
 
-var ToggleInput = $.extend({}, TextInput, {
-
-	onChange: function(event, node) {
-		if (event.data && event.data.element)
-		{
-			event.data.element.trigger('propertyChange', [this.checked?this.getAttribute("data-value-on"):this.getAttribute("data-value-off"), this]);
-		}
-	},
-
-    events: [
-        ["change", "onChange", "input"],
+let ToggleInput = { ...Input, ...{
+	events: [
+        ["change", "onToggleChange", "input"],
 	 ],
 
+	onToggleChange: function(event, node, input) {
+		input.value = this.checked ? this.getAttribute("data-value-on") : this.getAttribute("data-value-off");
+		return input.onChange.call(this, event, node, input);
+	},
+
+	setValue: function(value) {
+		if (this.element[0]) {
+			let input = this.element[0].querySelector('input');
+
+			if (input) { 
+				if (value == input.getAttribute("data-value-on")) {
+					input.checked = true;
+					input.setAttribute("checked", true);
+				} else {
+					input.checked = false;
+					input.removeAttribute("checked");
+				}
+			}
+		}
+	},
+	
 	init: function(data) {
 		return this.render("toggle", data);
 	},
   }
-);
+}
 
-var ValueTextInput = $.extend({}, TextInput, {
+let ValueTextInput = { ...TextInput, ...{
 
     events: [
-        ["blur", "onChange", "input"],
+        ["focusout", "onChange", "input"],
 	 ],
 	
 	init: function(data) {
 		return this.render("textinput", data);
 	},
   }
-);
+}
 
-var GridLayoutInput = $.extend({}, TextInput, {
+let GridLayoutInput = { ...TextInput, ...{
 
     events: [
-        ["blur", "onChange", "input"],
+        ["focusout", "onChange", "input"],
 	 ],
 	
 	init: function(data) {
 		return this.render("textinput", data);
 	},
   }
-);
+}
 
-var ProductsInput = $.extend({}, TextInput, {
+let ProductsInput = { ...TextInput, ...{
 
     events: [
-        ["blur", "onChange", "input"],
+        ["focusout", "onChange", "input"],
 	 ],
 	
 	init: function(data) {
 		return this.render("textinput", data);
 	},
   }
-);
+}
 
-
-var GridInput = $.extend({}, Input, {
+let GridInput = { ...Input, ...{
 	
 
     events: [
@@ -464,32 +642,41 @@ var GridInput = $.extend({}, Input, {
 	
 
 	setValue: function(value) {
-		$('select', this.element).val(value);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('select');
+		
+			if (input) { 
+				input.value = value;
+				input.querySelector("option[selected]").selected = true;
+			}
+		}
 	},
 	
 	init: function(data) {
 		return this.render("grid", data);
 	},
-	
   }
-);
+}
 
-var TextValueInput = $.extend({}, Input, {
+let TextValueInput = { ...Input, ...{
 	
 
     events: [
-        ["blur", "onChange", "input"],
+        ["focusout", "onChange", "input"],
 	    ["click", "onChange", "button" /*'select'*/],
 	 ],
 	
+	setValue: function(value) {
+		return false;
+	},
+		
 	init: function(data) {
 		return this.render("textvalue", data);
 	},
-	
   }
-);
+}
 
-var ButtonInput = $.extend({}, Input, {
+let ButtonInput = { ...Input, ...{
 
     events: [
         ["click", "onChange", "button" /*'select'*/],
@@ -497,20 +684,25 @@ var ButtonInput = $.extend({}, Input, {
 	
 
 	setValue: function(value) {
-		$('button', this.element).val(value);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('button');
+		
+			if (input) { 
+				input.value = value;
+			}
+		}		
 	},
 	
 	init: function(data) {
 		return this.render("button", data);
 	},
-	
   }
-);
+}
 
-var SectionInput = $.extend({}, Input, {
+let SectionInput = { ...Input, ...{
 
     events: [
-        ["click", "onChange", "button" /*'select'*/],
+        //["click", "onChange", "button" /*'select'*/],
 	 ],
 	
 
@@ -521,100 +713,175 @@ var SectionInput = $.extend({}, Input, {
 	init: function(data) {
 		return this.render("sectioninput", data);
 	},
-	
   }
-);
+}
 
-var ListInput = $.extend({}, Input, {
+let ListInput = { ...Input, ...{
 	
     events: [
         ["change", "onChange", "select"],
+        ["click", "remove", ".delete-btn"],
+        ["click", "add", ".btn-new"],
+        ["click", "select", ".section-item"],
 	 ],
 	
 
-	setValue: function(value) {
-		$('select', this.element).val(value);
+	remove: function(event, node, input) {
+		let sectionItem = this.closest(".section-item");
+		let index = [...sectionItem.parentNode.children].indexOf(sectionItem);//sectionItem.index();
+		let data = input.data;
+		
+		if (data.removeElement) {
+			let container = input.node;
+			if (data.container) {
+				container.querySelector(data.container);
+			}
+			container.querySelector(data.selector + ":nth-child(" + (index + 1) + ")").remove();
+		}
+		sectionItem.remove();
+		
+		event.action = "remove";
+		event.index = index;
+		input.onChange(event, node, input, this);
+		event.preventDefault();
+		return false;
 	},
+
+	add: function(event, node, input) {
+		let newElement = input.data.newElement ?? false;
+		if (newElement) {
+			let container = input.node;
+			if (data.container) {
+				container.querySelector(data.container);
+			}			
+			container.append(generateElements(newElement)[0]);
+		}
+		
+		event.action = "add";
+		input.onChange(event, node, input, this);
+		return false;
+	},	
 	
-	init: function(data) {
+	select: function(event, node, input) {
+		let sectionItem = this.closest(".section-item");
+		if (sectionItem.parentNode) {
+			let index = [...sectionItem.parentNode.children].indexOf(sectionItem);//sectionItem.index();
+		
+		event.action = "select";
+		event.index = index;
+		input.onChange(event, node, input, this);
+		}
+		return false;
+	},
+
+	setValue: function(value) {
+	},
+
+	init: function(data, node) {
+		this.component = data.component;
+		this.selector = data.selector;
+		this.node = node;
+
+		let elements = this.node.querySelectorAll(data.container + " " + this.selector);
+		let options = [];
+		
+		elements.forEach(function (e, i) {
+			let element = e;
+			if (data.nameElement) {
+				element = element.querySelector(data.nameElement);
+			}
+			let name = (data.name = "text" ? element.textContent.substr(0, 15) : element.id);
+			options.push({
+				name: name,
+				type: (data.prefix ?? "") + (i + 1) + (data.suffix ?? ""),
+			});
+		});
+
+		data.options = options;
+		data.elements = elements;
+		this.data = data;
+
 		return this.render("listinput", data);
 	},
-	
   }
-);
+}
 
-
-
-var AutocompleteInput = $.extend({}, Input, {
+let AutocompleteInput = { ...Input, ...{
 
     events: [
         ["autocomplete.change", "onAutocompleteChange", "input"],
 	 ],
 
 	onAutocompleteChange: function(event, value, text) {
-		
-		if (event.data && event.data.element)
-		{
-			event.data.element.trigger('propertyChange', [value, this]);
-		}
+		input.value = value;
+		return this.onChange(event, node);
 	},
 
 	init: function(data) {
 		
 		this.element = this.render("textinput", data);
 		
-		$('input', this.element).autocomplete(data.url);//using default parameters
+		let autocomplete = new Autocomplete({input:this.element.querySelector("input"), url:data.url});
 		
 		return this.element;
 	}
   }
-);
+}
 
-var AutocompleteList = $.extend({}, Input, {
+let AutocompleteList = { ...Input, ...{
 
     events: [
         ["autocompletelist.change", "onAutocompleteChange", "input"],
 	 ],
 
-	onAutocompleteChange: function(event, value, text) {
-		
-		if (event.data && event.data.element)
-		{
-			event.data.element.trigger('propertyChange', [value, this]);
-		}
+	onAutocompleteChange: function(event, node, input) {
+		input.value = event.detail;
+		return input.onChange.call(this, event, node, input);
 	},
 
 	setValue: function(value) {
-		$('input', this.element).data("autocompleteList").setValue(value);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('input');
+		
+			if (input) { 
+				input.dataset.autocompleteList.setValue(value);
+				
+			}
+		}		
 	},
 
 	init: function(data) {
 		
 		this.element = this.render("textinput", data);
 		
+		let autocomplete = new Autocomplete({input:this.element.querySelector("input"), url:data.url});
 		$('input', this.element).autocompleteList(data);//using default parameters
 		
 		return this.element;
 	}
   }
-);
+}
 
-var TagsInput = $.extend({}, Input, {
+let TagsInput = { ...Input, ...{
 
     events: [
         ["tagsinput.change", "onTagsInputChange", "input"],
 	 ],
 
 	onTagsInputChange: function(event, value, text) {
-		
-		if (event.data && event.data.element)
-		{
-			event.data.element.trigger('propertyChange', [value, this]);
-		}
+		input.value = value;
+		return this.onChange(event, node);
 	},
 
 	setValue: function(value) {
-		$('input', this.element).data("tagsInput").setValue(value);
+		if (this.element[0] && value) {
+			let input = this.element[0].querySelector('select');
+		
+			if (input) { 
+				input.dataset.tagsInput.setValue(value);
+				
+			}
+		}
 	},
 
 	init: function(data) {
@@ -626,10 +893,10 @@ var TagsInput = $.extend({}, Input, {
 		return this.element;
 	}
   }
-);
+}
 
 
-var NoticeInput = $.extend({}, Input, {
+let NoticeInput = { ...Input, ...{
 
     events: [
 	 ],
@@ -638,4 +905,4 @@ var NoticeInput = $.extend({}, Input, {
 		return this.render("noticeinput", data);
 	},
   }
-);
+}
